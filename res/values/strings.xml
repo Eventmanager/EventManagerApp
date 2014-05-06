@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">EventManagerApp</string>
+    <string name="test">Test 123 (456)</string>
+
+</resources>
