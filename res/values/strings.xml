@@ -2,6 +2,12 @@
 <resources>
 
     <string name="app_name">EventManagerApp</string>
-    <string name="test">Test 123 (456)</string>
+    
+    <string name="btn_map">Kaart</string>
+    <string name="btn_planning">planning</string>
+    <string name="btn_news">nieuws</string>
+    <string name="btn_options">Opties</string>
+    
+    <string name="title_activity__map">Activity_Map</string>
 
 </resources>
