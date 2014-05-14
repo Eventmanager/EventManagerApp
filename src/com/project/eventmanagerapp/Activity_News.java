@@ -3,6 +3,8 @@ package com.project.eventmanagerapp;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,17 +32,17 @@ public class Activity_News extends Activity {
 			
 			title.setText(ni.getTitle());
 			title.setTextSize(25);
+			title.setPadding(7, 0, 7, 0);
 			content.setText(ni.getText());
 			content.setTextSize(17);
+			content.setPadding(3, 0, 3, 0);
 			
 			ll.addView(title, lp);
 			ll.addView(content, lp);
 			
 			//horizontal seperator line
-			/*
-			View ruler = new View(myContext); ruler.setBackgroundColor(0xFF00FF00);
-			theParent.addView(ruler, new ViewGroup.LayoutParams( ViewGroup.LayoutParams.FILL_PARENT, 2));
-			*/
+			View ruler = new View(context); ruler.setBackgroundColor(0xFF000000);
+			ll.addView(ruler, new ViewGroup.LayoutParams( ViewGroup.LayoutParams.FILL_PARENT, 2));
 		}
 	}
 }
