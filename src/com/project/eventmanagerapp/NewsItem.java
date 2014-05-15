@@ -1,6 +1,6 @@
 package com.project.eventmanagerapp;
 
-
+//Newsitems are to be retrieved from a server and displayed in the news activity
 public class NewsItem {
 	private String title;
 	private String text;

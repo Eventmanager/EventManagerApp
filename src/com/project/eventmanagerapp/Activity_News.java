@@ -1,11 +1,15 @@
 package com.project.eventmanagerapp;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,6 +17,7 @@ public class Activity_News extends Activity {
 	
 	LinearLayout ll = null;
 	LayoutParams lp = null;
+	Button refreshButton;
 	final Context context = this;
 	
 	@Override
@@ -22,11 +27,23 @@ public class Activity_News extends Activity {
 		
 		ll = (LinearLayout)findViewById(R.id.view_news_list);
 		lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		
+		refreshButton = (Button) findViewById(R.id.btn_news_refresh);
+		refreshButton.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				showAndRefreshDisplay();
+			}
+		});
+		
 		displayNews();
 	}
 	
+	//Gets news from news source and displays it, newest news first (arraylist is reversed)
 	private void displayNews(){
-		for(NewsItem ni : NewsSource.getInstance().getNewsList()){
+		ArrayList<NewsItem> newsList = NewsSource.getInstance().getNewsList();
+		for(int i = newsList.size() - 1; i >= 0; i--){
+			NewsItem ni = newsList.get(i);
 			TextView title = new TextView(context);
 			TextView content = new TextView(context);
 			
@@ -44,5 +61,12 @@ public class Activity_News extends Activity {
 			View ruler = new View(context); ruler.setBackgroundColor(0xFF000000);
 			ll.addView(ruler, new ViewGroup.LayoutParams( ViewGroup.LayoutParams.FILL_PARENT, 2));
 		}
+	}
+	
+	//Used by the refresh button to shut activity down, and start it up again, thereby removing the old list and triggering the creaton of a new one.
+	public void showAndRefreshDisplay(){
+		NewsSource.getInstance().updateNewsList();
+		finish();
+		startActivity(getIntent());
 	}
 }
