@@ -1,6 +1,7 @@
 package com.project.eventmanagerapp;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import android.util.Log;
 
@@ -11,12 +12,14 @@ public class NewsSource {
 	private static NewsSource instance = null;
 	private UpdateTimer uTimer;
 	private long UPDATEDELAY = 60000;//TODO: get this value from options menu //TMP
+	private GregorianCalendar lastCheckTime;
 	
 	private ArrayList<NewsItem> newsList = new ArrayList<NewsItem>();
 	
 	private NewsSource(){
 		uTimer = new UpdateTimer(this, UPDATEDELAY);
 		new Thread(uTimer).start();
+		lastCheckTime = new GregorianCalendar(1900, 1, 1);//Last check is so far in the past that every news item is new per default.
 	}
 	
 	//You don't make a new newssource, you get the only excisting instance, that is the point of a singleton construction
@@ -42,7 +45,7 @@ public class NewsSource {
 			//Check if newsitem is already in the list
 			boolean isNew = true;
 			for(NewsItem oldNI : newsList){
-				if(newNI.getTitle().equals(oldNI.getTitle()) && newNI.getText().equals(oldNI.getText())){
+				if(newNI.getId() == oldNI.getId()){
 					isNew = false;
 				}
 			}
@@ -59,20 +62,19 @@ public class NewsSource {
 	
 	//Function that communicates with the server
 	private ArrayList<NewsItem> requestNews(){
-		//TODO: get news from a server
+		//TODO: get news from a server, make sure to use lastCheckTime to not stress server out to much
 		ArrayList<NewsItem> list = new ArrayList<NewsItem>();
 		
 		//TODO: Remove this placeholder
-		list.add(new NewsItem("Lorum!", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fermentum risus urna. In elit enim, aliquam at risus quis, faucibus ullamcorper nisi. Donec nec metus nec lorem lobortis sodales ut at eros. Donec dictum est vel neque laoreet accumsan. Integer et nulla elit. Praesent sed venenatis nisi, eu dictum elit."));
-		list.add(new NewsItem("Ipsem", "Nulla eget lacus porta, consectetur leo facilisis, aliquet ligula. Vivamus quis molestie libero. Ut adipiscing felis odio, nec eleifend nunc condimentum non. Fusce id dui mauris. Pellentesque ac metus vestibulum, scelerisque nibh volutpat, iaculis est. Nunc ultricies leo ac tortor euismod consequat."));
-		list.add(new NewsItem("Molestie faucibus", "Pellentesque molestie faucibus auctor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."));
-		list.add(new NewsItem("GEN", "" + System.currentTimeMillis()));
+		list.add(new NewsItem("Lorum!", 0, new GregorianCalendar(2007, 5, 18, 15, 26, 30), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fermentum risus urna. In elit enim, aliquam at risus quis, faucibus ullamcorper nisi. Donec nec metus nec lorem lobortis sodales ut at eros. Donec dictum est vel neque laoreet accumsan. Integer et nulla elit. Praesent sed venenatis nisi, eu dictum elit."));
+		list.add(new NewsItem("GEN", (int)(Math.random() * 1000), new GregorianCalendar(), "" + System.currentTimeMillis()));
 		
+		lastCheckTime = new GregorianCalendar();//Calander w/ current date and time
 		return list;
 	}
 	
 	private void sendNotification(NewsItem ni){
-		//TODO: send a push notification
+		//TODO: send a push notification JORDI PLZ
 		Log.i("NewsSource", "placeholder for actual notification: " + ni.getTitle());
 	}
 }
