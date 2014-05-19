@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">EventManagerApp</string>
     
     <string name="btn_map">Kaart</string>
@@ -11,4 +10,6 @@
     <string name="title_activity__map">Activity_Map</string>
 
     <string name="btn_news_refresh">Vernieuw</string>
+    
+    <string name="server_address">http://www.jgeluk.net:8778/</string>
 </resources>

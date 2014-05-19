@@ -1,15 +1,13 @@
 package com.project.eventmanagerapp;
 
-import java.util.GregorianCalendar;
-
 //Newsitems are to be retrieved from a server and displayed in the news activity
 public class NewsItem {
 	private String title;
 	private int id;
-	private GregorianCalendar date;
+	private String date; //Saved as string, not as actual useable date because it is for display purposes only.
 	private String text;
 	
-	public NewsItem(String _title, int _id, GregorianCalendar _date, String _text){
+	public NewsItem(String _title, int _id, String _date, String _text){
 		title = _title;
 		id = _id;
 		date = _date;
@@ -28,11 +26,11 @@ public class NewsItem {
 		return id;
 	}
 
-	public GregorianCalendar getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(GregorianCalendar date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

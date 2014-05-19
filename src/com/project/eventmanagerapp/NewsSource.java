@@ -3,6 +3,13 @@ package com.project.eventmanagerapp;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import org.json.*;
+
+import android.content.Context;
 import android.util.Log;
 
 public class NewsSource {
@@ -14,18 +21,21 @@ public class NewsSource {
 	private long UPDATEDELAY = 60000;//TODO: get this value from options menu //TMP
 	private GregorianCalendar lastCheckTime;
 	
+	private Context context;
+	
 	private ArrayList<NewsItem> newsList = new ArrayList<NewsItem>();
 	
-	private NewsSource(){
-		uTimer = new UpdateTimer(this, UPDATEDELAY);
+	private NewsSource(Context _context){
+		context = _context;
+		uTimer = new UpdateTimer(this, UPDATEDELAY, context);
 		new Thread(uTimer).start();
 		lastCheckTime = new GregorianCalendar(1900, 1, 1);//Last check is so far in the past that every news item is new per default.
 	}
 	
-	//You don't make a new newssource, you get the only excisting instance, that is the point of a singleton construction
-	public static NewsSource getInstance(){
+	//You don't make a new newssource, you get the only existing instance, that is the point of a singleton construction
+	public static NewsSource getInstance(Context context){
 		if(instance == null){
-			instance = new NewsSource();			
+			instance = new NewsSource(context);			
 		}		
 		return instance;
 	}
@@ -61,14 +71,65 @@ public class NewsSource {
 	}
 	
 	//Function that communicates with the server
+	private String getJSonFromServer() throws Exception{
+		String fullContent = "";
+		String queryParams = ""; //TODO: when server is ready for it use lastCheckTime variable to only request new items. Refer to Eventmanager/EventManagerServer/PROTOCOL.txt
+		URL url = new URL(context.getString(R.string.server_address) + "news?" + queryParams);//No hardcoding here! Server address is saved in res/values/strings.xml
+		URLConnection con = url.openConnection();
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		
+		String parseString;
+		while((parseString  = in.readLine()) != null){
+			fullContent += parseString;
+		}
+		in.close();
+
+		return fullContent;
+	}
+	
+	//Calls getJSonFromServer(), then reads the JSon and turns it into a list<NewsItem>
 	private ArrayList<NewsItem> requestNews(){
-		//TODO: get news from a server, make sure to use lastCheckTime to not stress server out to much
 		ArrayList<NewsItem> list = new ArrayList<NewsItem>();
+		String fullJSonString = null;
+				
+		try {
+			fullJSonString = getJSonFromServer();
+		} catch (Exception e) {
+			Log.w("NewsSource", "Could not get news from server, possible connection problem (?)");
+			Log.e("NewsSource", Log.getStackTraceString(e));
+			return list; //Return empty list, other methods should be able to handle that
+			//long lastCheckTime isn't changed, this way connection loss doesn't make you miss out on news items 
+		}
 		
-		//TODO: Remove this placeholder
-		list.add(new NewsItem("Lorum!", 0, new GregorianCalendar(2007, 5, 18, 15, 26, 30), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fermentum risus urna. In elit enim, aliquam at risus quis, faucibus ullamcorper nisi. Donec nec metus nec lorem lobortis sodales ut at eros. Donec dictum est vel neque laoreet accumsan. Integer et nulla elit. Praesent sed venenatis nisi, eu dictum elit."));
-		list.add(new NewsItem("GEN", (int)(Math.random() * 1000), new GregorianCalendar(), "" + System.currentTimeMillis()));
-		
+		try {
+			JSONObject obj = new JSONObject(fullJSonString);
+			
+			if(obj.getBoolean("success")){
+				//System.out.println(obj.getJSONObject("results"))
+				JSONObject resultObj = obj.getJSONObject("result");
+				JSONArray arr = resultObj.getJSONArray("posts");
+				for (int i = 0; i < arr.length(); i++)
+				{
+					JSONObject currentPost = arr.getJSONObject(i);
+					String title = currentPost.getString("title");
+					int id = currentPost.getInt("id");
+					String date = currentPost.getString("date");
+					String contents = currentPost.getString("contents");//content'S'
+					
+					list.add(new NewsItem(title, id, date, contents));
+				}
+			}else{//If server success is false
+				Log.w("NewsSource", "Internal server error while getting news");
+				return list; //Return empty list, other methods should be able to handle that
+				//long lastCheckTime isn't changed, this way connection loss doesn't make you miss out on news items 				
+			}
+			
+		} catch (JSONException e) {
+			Log.w("NewsSource", "Can't read the JSON gotten from the server/news");
+			return list; //Return empty list, other methods should be able to handle that
+			//long lastCheckTime isn't changed, this way connection loss doesn't make you miss out on news items
+		}
+
 		lastCheckTime = new GregorianCalendar();//Calander w/ current date and time
 		return list;
 	}
@@ -84,7 +145,7 @@ class UpdateTimer implements Runnable{
 	private NewsSource newsSource;
 	private long delay;
 	
-	UpdateTimer(NewsSource _newsSource, long _delay){
+	UpdateTimer(NewsSource _newsSource, long _delay, Context _context){
 		newsSource = _newsSource;
 		delay = _delay;
 	}
@@ -96,7 +157,6 @@ class UpdateTimer implements Runnable{
 				Thread.sleep(delay);
 				newsSource.updateNewsList();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
