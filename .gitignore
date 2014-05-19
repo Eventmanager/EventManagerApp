@@ -29,3 +29,5 @@ proguard/
 .idea/
 
 mapkey.xml
+
+project.properties
