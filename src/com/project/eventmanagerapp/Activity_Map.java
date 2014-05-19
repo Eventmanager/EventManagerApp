@@ -1,5 +1,6 @@
 package com.project.eventmanagerapp;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -18,7 +19,7 @@ public class Activity_Map extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        //setUpMapIfNeeded();
+        setUpMapIfNeeded();
     }
 
     @Override
@@ -39,14 +40,9 @@ public class Activity_Map extends FragmentActivity {
             }
         }
     }
-
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
+    
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(51.9167, 4.5000)).title("Rotterdam"));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.9167, 4.5000), 12.0f));
     }
 }
