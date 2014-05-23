@@ -13,6 +13,8 @@ public class Activity_Main extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		NewsSource.getInstance(this);//Starts the news update loop
+		
 		initButtons();
 	}
 	

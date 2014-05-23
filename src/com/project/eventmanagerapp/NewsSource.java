@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import org.json.*;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 public class NewsSource {
@@ -18,7 +19,6 @@ public class NewsSource {
 	//To avoid multiple threads syncing the news there can only be one NewsSource
 	private static NewsSource instance = null;
 	private UpdateTimer uTimer;
-	private long UPDATEDELAY = 60000;//TODO: get this value from options menu //TMP
 	private GregorianCalendar lastCheckTime;
 	
 	private Context context;
@@ -27,8 +27,12 @@ public class NewsSource {
 	
 	private NewsSource(Context _context){
 		context = _context;
-		uTimer = new UpdateTimer(this, UPDATEDELAY, context);
+		
+		//Initiate auto updating news
+		SharedPreferences pref = context.getSharedPreferences("MyPref", 0);
+		uTimer = new UpdateTimer(this, pref.getInt("newsRefreshTimeMillis", 600000), context);
 		new Thread(uTimer).start();
+		
 		lastCheckTime = new GregorianCalendar(1900, 1, 1);//Last check is so far in the past that every news item is new per default.
 	}
 	
@@ -61,7 +65,7 @@ public class NewsSource {
 							isNew = false;
 						}
 					}
-					
+					//The first new NewsItem gets a notification
 					if(isNew){
 						newsList.add(newNI);
 						if(!hasSendNotification){
@@ -154,6 +158,7 @@ class UpdateTimer implements Runnable{
 	UpdateTimer(NewsSource _newsSource, long _delay, Context _context){
 		newsSource = _newsSource;
 		delay = _delay;
+		Log.d("UpdateTimer", "Will update news every " + delay + " MS");
 	}
 	
 	@Override

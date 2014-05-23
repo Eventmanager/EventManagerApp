@@ -7,9 +7,13 @@
     <string name="btn_news">nieuws</string>
     <string name="btn_options">Opties</string>
     
+    <string name="option_refreshtime">Refresh news delay (min)</string>
+    
     <string name="title_activity__map">Activity_Map</string>
 
     <string name="btn_news_refresh">Vernieuw</string>
     
     <string name="server_address">http://www.jgeluk.net:8778/</string>
+    
+    <string name="options_restartwarning">App might need to be restarted for some options to apply</string>
 </resources>

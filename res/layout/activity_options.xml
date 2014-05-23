@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
     
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="OPTIONS"
-        android:textSize="25sp" />
-</LinearLayout>
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@string/option_refreshtime"
+		    android:textSize="20sp" />
+		
+		<EditText
+		    android:id="@+id/in_refreshtime"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:inputType="number" />
+		
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="Lorum Ipsem"
+		    android:textSize="20sp" />
+		
+		<EditText
+		    android:id="@+id/TMP"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:inputType="number" />
+		
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@string/options_restartwarning"
+		    android:textSize="15sp" />
+	</LinearLayout>
+</ScrollView>
