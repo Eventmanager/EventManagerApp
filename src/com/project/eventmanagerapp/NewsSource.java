@@ -42,32 +42,36 @@ public class NewsSource {
 	
 	//Get news list
 	public ArrayList<NewsItem> getNewsList(){
-		if(newsList.isEmpty()){
+		/*if(newsList.isEmpty()){
 			updateNewsList();
-		}
+		}*/
 		return newsList;
 	}
 	
 	//Get latest news from server, if new news is found a push notification will be send to the user
 	public void updateNewsList(){
-		boolean hasSendNotification = false;
-		for(NewsItem newNI : requestNews()){
-			//Check if newsitem is already in the list
-			boolean isNew = true;
-			for(NewsItem oldNI : newsList){
-				if(newNI.getId() == oldNI.getId()){
-					isNew = false;
+		new Thread(new Runnable(){
+			public void run(){
+				boolean hasSendNotification = false;
+				for(NewsItem newNI : requestNews()){
+					//Check if newsitem is already in the list
+					boolean isNew = true;
+					for(NewsItem oldNI : newsList){
+						if(newNI.getId() == oldNI.getId()){
+							isNew = false;
+						}
+					}
+					
+					if(isNew){
+						newsList.add(newNI);
+						if(!hasSendNotification){
+							sendNotification(newNI);
+							hasSendNotification = true;
+						}
+					}
 				}
-			}
-			
-			if(isNew){
-				newsList.add(newNI);
-				if(!hasSendNotification){
-					sendNotification(newNI);
-					hasSendNotification = true;
-				}
-			}
-		}
+			}}
+		).start();
 	}
 	
 	//Function that communicates with the server
@@ -93,7 +97,9 @@ public class NewsSource {
 		String fullJSonString = null;
 				
 		try {
+			Log.d("NewsSource", "At: " + System.currentTimeMillis() + " Requesting news from server");
 			fullJSonString = getJSonFromServer();
+			Log.d("NewsSource", "At: " + System.currentTimeMillis() + " Got the news from server. Start parsing it");
 		} catch (Exception e) {
 			Log.w("NewsSource", "Could not get news from server, possible connection problem (?)");
 			Log.e("NewsSource", Log.getStackTraceString(e));

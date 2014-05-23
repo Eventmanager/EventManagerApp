@@ -42,6 +42,10 @@ public class Activity_News extends Activity {
 	//Gets news from news source and displays it, newest news first (arraylist is reversed)
 	private void displayNews(){
 		ArrayList<NewsItem> newsList = NewsSource.getInstance(context).getNewsList();
+		if(newsList.size() == 0){
+			newsList = (ArrayList<NewsItem>) newsList.clone();
+			newsList.add(new NewsItem("--- EMPTY ---", -1, "-1", "Maybe try a refresh"));
+		}
 		for(int i = newsList.size() - 1; i >= 0; i--){
 			NewsItem ni = newsList.get(i);
 			TextView title = new TextView(context);
@@ -65,8 +69,19 @@ public class Activity_News extends Activity {
 	
 	//Used by the refresh button to shut activity down, and start it up again, thereby removing the old list and triggering the creaton of a new one.
 	public void showAndRefreshDisplay(){
-		NewsSource.getInstance(context).updateNewsList();
-		finish();
-		startActivity(getIntent());
+		refreshButton.setText("Wait please...");
+		refreshButton.setEnabled(false);
+		new Thread(new Runnable() {
+			public void run(){
+				NewsSource.getInstance(context).updateNewsList();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				finish();
+				startActivity(getIntent());
+			}}
+		).start();
 	}
 }
