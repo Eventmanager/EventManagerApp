@@ -19,7 +19,7 @@ public class NewsSource {
 	//To avoid multiple threads syncing the news there can only be one NewsSource
 	private static NewsSource instance = null;
 	private UpdateTimer uTimer;
-	private GregorianCalendar lastCheckTime;
+	private String lastCheckTime;
 	
 	private Context context;
 	
@@ -33,7 +33,7 @@ public class NewsSource {
 		uTimer = new UpdateTimer(this, pref.getInt("newsRefreshTimeMillis", 600000), context);
 		new Thread(uTimer).start();
 		
-		lastCheckTime = new GregorianCalendar(1900, 1, 1);//Last check is so far in the past that every news item is new per default.
+		lastCheckTime = "1901-01-01 11:11:11";//Last check is so far in the past that every news item is new per default.
 	}
 	
 	//You don't make a new newssource, you get the only existing instance, that is the point of a singleton construction
@@ -56,7 +56,7 @@ public class NewsSource {
 	public void updateNewsList(){
 		new Thread(new Runnable(){
 			public void run(){
-				boolean hasSendNotification = false;
+				NewsItem notifyNews = null;
 				for(NewsItem newNI : requestNews()){
 					//Check if newsitem is already in the list
 					boolean isNew = true;
@@ -68,11 +68,12 @@ public class NewsSource {
 					//The first new NewsItem gets a notification
 					if(isNew){
 						newsList.add(newNI);
-						if(!hasSendNotification){
-							sendNotification(newNI);
-							hasSendNotification = true;
-						}
+						notifyNews = newNI;
 					}
+				}
+				if(notifyNews != null){//Gets send after parsing through ALL, so it alwasy notifies you of the newest one 
+					sendNotification(notifyNews);
+					lastCheckTime = notifyNews.getDate();//Saves date of newest post so ik can use the ?before= query argument next request
 				}
 			}}
 		).start();
@@ -80,12 +81,14 @@ public class NewsSource {
 	
 	//Function that communicates with the server
 	private String getJSonFromServer() throws Exception{
-		String fullContent = "";
-		String queryParams = ""; //TODO: when server is ready for it use lastCheckTime variable to only request new items. Refer to Eventmanager/EventManagerServer/PROTOCOL.txt
+		String beforeArg = "after=" + lastCheckTime;
+		String queryParams = beforeArg.replace(" ", "%20");//Don't use spaces, but %20
+		queryParams += "&count=30";
 		URL url = new URL(context.getString(R.string.server_address) + "news?" + queryParams);//No hardcoding here! Server address is saved in res/values/strings.xml
 		URLConnection con = url.openConnection();
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		
+		String fullContent = "";
 		String parseString;
 		while((parseString  = in.readLine()) != null){
 			fullContent += parseString;
@@ -140,8 +143,7 @@ public class NewsSource {
 			return list; //Return empty list, other methods should be able to handle that
 			//long lastCheckTime isn't changed, this way connection loss doesn't make you miss out on news items
 		}
-
-		lastCheckTime = new GregorianCalendar();//Calander w/ current date and time
+		
 		return list;
 	}
 	
