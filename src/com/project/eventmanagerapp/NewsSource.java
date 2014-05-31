@@ -61,7 +61,7 @@ public class NewsSource {
 					//Check if newsitem is already in the list
 					boolean isNew = true;
 					for(NewsItem oldNI : newsList){
-						if(newNI.getId() == oldNI.getId()){
+						if(newNI.getId().equals(oldNI.getId())){
 							isNew = false;
 						}
 					}
@@ -122,7 +122,7 @@ public class NewsSource {
 				{
 					JSONObject currentPost = arr.getJSONObject(i);
 					String title = currentPost.getString("title");
-					int id = currentPost.getInt("id");
+					String id = currentPost.getString("id");
 					String date = currentPost.getString("date");
 					String contents = currentPost.getString("contents");//content'S'
 					
@@ -136,6 +136,7 @@ public class NewsSource {
 			
 		} catch (JSONException e) {
 			Log.w("NewsSource", "Can't read the JSON gotten from the server/news");
+			Log.e("NewsSource", Log.getStackTraceString(e));
 			return list; //Return empty list, other methods should be able to handle that
 			//long lastCheckTime isn't changed, this way connection loss doesn't make you miss out on news items
 		}

@@ -44,7 +44,7 @@ public class Activity_News extends Activity {
 		ArrayList<NewsItem> newsList = NewsSource.getInstance(context).getNewsList();
 		if(newsList.size() == 0){
 			newsList = (ArrayList<NewsItem>) newsList.clone();
-			newsList.add(new NewsItem("--- EMPTY ---", -1, "-1", "Maybe try a refresh"));
+			newsList.add(new NewsItem("--- EMPTY ---", "-1", "-1", "Maybe try a refresh"));
 		}
 		for(int i = newsList.size() - 1; i >= 0; i--){
 			NewsItem ni = newsList.get(i);
