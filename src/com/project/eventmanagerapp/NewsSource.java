@@ -79,25 +79,6 @@ public class NewsSource {
 		).start();
 	}
 	
-	//Function that communicates with the server
-	private String getJSonFromServer() throws Exception{
-		String beforeArg = "after=" + lastCheckTime;
-		String queryParams = beforeArg.replace(" ", "%20");//Don't use spaces, but %20
-		queryParams += "&count=30";
-		URL url = new URL(context.getString(R.string.server_address) + "news?" + queryParams);//No hardcoding here! Server address is saved in res/values/strings.xml
-		URLConnection con = url.openConnection();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		
-		String fullContent = "";
-		String parseString;
-		while((parseString  = in.readLine()) != null){
-			fullContent += parseString;
-		}
-		in.close();
-
-		return fullContent;
-	}
-	
 	//Calls getJSonFromServer(), then reads the JSon and turns it into a list<NewsItem>
 	private ArrayList<NewsItem> requestNews(){
 		ArrayList<NewsItem> list = new ArrayList<NewsItem>();
@@ -105,7 +86,8 @@ public class NewsSource {
 				
 		try {
 			Log.d("NewsSource", "At: " + System.currentTimeMillis() + " Requesting news from server");
-			fullJSonString = getJSonFromServer();
+			ServerCommunication sc = new ServerCommunication(context);
+			fullJSonString = sc.getNewsJSonFromServer(lastCheckTime);
 			Log.d("NewsSource", "At: " + System.currentTimeMillis() + " Got the news from server. Start parsing it");
 		} catch (Exception e) {
 			Log.w("NewsSource", "Could not get news from server, possible connection problem (?)");
