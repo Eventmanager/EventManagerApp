@@ -77,6 +77,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        <!-- Planning info ACTIVITY -->
+        <activity
+            android:name="Activity_Planninginfo"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.project.eventmanagerapp.Activity_Planninginfo" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

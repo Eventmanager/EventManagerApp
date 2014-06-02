@@ -1,12 +1,15 @@
 package com.project.eventmanagerapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -61,6 +64,8 @@ public class Activity_Planning extends Activity {
 				txt[j].setSingleLine(true);
 				txt[j].setEllipsize(TruncateAt.END);
 				txt[j].setTextSize(20);
+				txt[j].setOnClickListener(new EventClickListener(planninginfo[i][j].getName()));
+				
 				linear[i].addView(txt[j]);
 				if(j != txt.length-1)
 					linear[i].addView(divider);
@@ -92,6 +97,11 @@ public class Activity_Planning extends Activity {
 			li.addView(time);
 		}
 		
+		
+	}
+	
+	
+	public void onClick(View v,String s){
 		
 	}
 	
@@ -136,4 +146,22 @@ public class Activity_Planning extends Activity {
 			return this.end-this.start;
 		}
 	}
+	
+	public class EventClickListener implements OnClickListener
+	   {
+
+	     String name;
+	     public EventClickListener(String eventname) {
+	          this.name = eventname;
+	     }
+
+	     @Override
+	     public void onClick(View v)
+	     {
+	    	 Intent newpage = new Intent("com.project.eventmanagerapp.Activity_Planninginfo");		
+	    	 newpage.putExtra("eventname", this.name);
+	    	 startActivity(newpage);
+	     }
+
+	  };
 }
