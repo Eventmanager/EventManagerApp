@@ -13,7 +13,8 @@
 
     <string name="btn_news_refresh">Vernieuw</string>
     
-    <string name="server_address">http://www.jgeluk.net:8778/</string>
+    <string name="server_address">http://www.jgeluk.net:8778/</string> <!-- Johan VPN -->
+    <!-- <string name="server_address">http://86.86.1.171:8778/</string> Wisam Thuis PC-->
     
     <string name="options_restartwarning">App might need to be restarted for some options to apply</string>
 </resources>
