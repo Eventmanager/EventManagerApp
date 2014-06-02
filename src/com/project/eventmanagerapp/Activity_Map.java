@@ -52,6 +52,9 @@ public class Activity_Map extends FragmentActivity {
     	
     	//Example code for an image. In this case near the marker.
     	/*GroundOverlay image1 = new ImageBuilder().position(new LatLng(51.9167, 4.4980)).width(2000f).image("house").build();*/
+    	
+    	//Example code for drawing a semi-transparent circle.
+    	Circle circle1 = new CircleBuilder().position(new LatLng(51.9167, 4.4980)).radius(3000).stroke(Color.GREEN).fill(Color.argb(50,200,0,0)).strokeWidth(3f).build();
     }
     
     
@@ -147,6 +150,55 @@ public class Activity_Map extends FragmentActivity {
         		poly.strokeColor(this.stroke);
     		
     		return eventMap.addPolygon(poly);
+    	}
+    	
+    }
+    
+    private class CircleBuilder{
+    	
+
+    	Float strokeWidth = null;
+    	Integer fill = null;
+    	Integer stroke = null;
+    	int radius = 0;
+    	LatLng position;
+    	
+    	public CircleBuilder(){}
+    	
+    	public CircleBuilder stroke(Integer stroke){ // Colour of the stroke around the circle.
+    		this.stroke = stroke;
+    		return this;
+    	}
+    	
+    	public CircleBuilder fill(Integer fill){ // Fill colour of the circle.
+    		this.fill = fill;
+    		return this;
+    	}
+    	public CircleBuilder strokeWidth(Float size){ // Width of the stroke around the circle.
+        	this.strokeWidth = size;
+        	return this;
+    	}
+    	public CircleBuilder position(LatLng pos){ // Center of the circle.
+    		this.position = pos;
+    		return this;
+    	}
+    	public CircleBuilder radius(int m){ // Radius of the circle.
+    		this.radius = m;
+    		return this;
+    	}
+    	public Circle build(){ // Create the circle, draw it on the map and return it as a Circle.
+    		CircleOptions circle = new CircleOptions();
+    		circle.center(position);
+    		circle.radius(radius);
+    		
+    		if(this.fill != null)
+    			circle.fillColor(this.fill);
+    		if(this.strokeWidth != null)
+    			circle.strokeWidth(this.strokeWidth);
+    		if(this.stroke != null)
+    			circle.strokeColor(this.stroke);
+    		
+    		return eventMap.addCircle(circle);
     	}
     	
     }
