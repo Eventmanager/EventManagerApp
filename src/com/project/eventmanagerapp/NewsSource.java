@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import org.json.*;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -30,7 +31,7 @@ public class NewsSource {
 		
 		//Initiate auto updating news
 		SharedPreferences pref = context.getSharedPreferences("MyPref", 0);
-		uTimer = new UpdateTimer(this, pref.getInt("newsRefreshTimeMillis", 600000), context);
+		uTimer = new UpdateTimer(this, pref.getInt("newsRefreshTimeMillis", 60000), context);
 		new Thread(uTimer).start();
 		
 		lastCheckTime = "1901-01-01 11:11:11";//Last check is so far in the past that every news item is new per default.
@@ -130,8 +131,7 @@ public class NewsSource {
 	}
 	
 	private void sendNotification(NewsItem ni){
-		//TODO: send a push notification JORDI PLZ
-		Log.i("NewsSource", "placeholder for actual notification: " + ni.getTitle());
+		PushNotification.sendNotification(context, new Intent("com.project.eventmanagerapp.Activity_News"), ni.getTitle(), ni.getText(), 0);
 	}
 }
 
@@ -150,8 +150,8 @@ class UpdateTimer implements Runnable{
 	public void run() {
 		while(true){
 			try {
-				Thread.sleep(delay);
 				newsSource.updateNewsList();
+				Thread.sleep(delay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

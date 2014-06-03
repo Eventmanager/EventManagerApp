@@ -7,7 +7,7 @@
     <string name="btn_news">nieuws</string>
     <string name="btn_options">Opties</string>
     
-    <string name="option_refreshtime">Refresh news delay (min)</string>
+    <string name="option_refreshtime">Refresh news delay (sec)</string>
     
     <string name="title_activity__map">Activity_Map</string>
 

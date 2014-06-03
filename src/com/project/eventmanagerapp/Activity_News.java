@@ -36,6 +36,7 @@ public class Activity_News extends Activity {
 			}
 		});
 		
+		PushNotification.removeNotification(context);
 		displayNews();
 	}
 	
@@ -75,7 +76,7 @@ public class Activity_News extends Activity {
 			public void run(){
 				NewsSource.getInstance(context).updateNewsList();
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(1200);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

@@ -27,21 +27,21 @@ public class Activity_Main extends Activity {
 		btn_map.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent("com.project.eventmanagerapp.Activity_Map"));				
+				startActivity(new Intent("com.project.eventmanagerapp.Activity_Map"));
 			}
 		});
 		
 		btn_planning.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent("com.project.eventmanagerapp.Activity_Planning"));				
+				startActivity(new Intent("com.project.eventmanagerapp.Activity_Planning"));
 			}
 		});
 		
 		btn_news.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent("com.project.eventmanagerapp.Activity_News"));				
+				startActivity(new Intent("com.project.eventmanagerapp.Activity_News"));
 			}
 		});
 		

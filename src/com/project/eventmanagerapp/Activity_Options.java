@@ -33,7 +33,7 @@ public class Activity_Options extends Activity {
 			@Override
 			public void afterTextChanged(Editable s) {
 				if(s.toString().matches("^-?\\d+$")){//REGEX means, is digit w/out other chars
-					int userInput = 60 * 1000 * (Integer.parseInt(s.toString()));// x60 for min<sec x1000 for ms<sec
+					int userInput = 1000 * (Integer.parseInt(s.toString()));//x1000 for ms<sec
 					if(userInput > 999){//To prevent negative or very low input
 						editor.putInt("newsRefreshTimeMillis", userInput);
 						editor.commit();
