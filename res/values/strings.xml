@@ -8,6 +8,8 @@
     <string name="btn_options">Opties</string>
     
     <string name="option_refreshtime">Refresh news delay (sec)</string>
+    <string name="option_newsnotification">Push news notifications</string>
+    <string name="options_restartwarning">App might need to be restarted for some options to apply</string>
     
     <string name="title_activity__map">Activity_Map</string>
 
@@ -16,5 +18,4 @@
     <string name="server_address">http://www.jgeluk.net:8778/</string> <!-- Johan VPN -->
     <!-- <string name="server_address">http://86.86.1.171:8778/</string> Wisam Thuis PC-->
     
-    <string name="options_restartwarning">App might need to be restarted for some options to apply</string>
 </resources>

@@ -7,6 +7,10 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 
 public class Activity_Options extends Activity {
@@ -16,6 +20,7 @@ public class Activity_Options extends Activity {
 	Editor editor;
 	
 	EditText refreshTime;
+	CheckBox newsNotify;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +31,14 @@ public class Activity_Options extends Activity {
 		sharedPref  = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
 		editor = sharedPref.edit();
 		
-		//User inputs in minutes how often NewsSource should get news from server
+		//Get views
 		refreshTime = (EditText) findViewById(R.id.in_refreshtime);
+		newsNotify = (CheckBox) findViewById(R.id.in_newsnotifications);
 		
+		//Set newsNotify box to represent stored value
+		newsNotify.setChecked(sharedPref.getBoolean("newsShowNotification", true));
+		
+		//User inputs in minutes how often NewsSource should get news from server
 		refreshTime.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable s) {
@@ -37,6 +47,7 @@ public class Activity_Options extends Activity {
 					if(userInput > 999){//To prevent negative or very low input
 						editor.putInt("newsRefreshTimeMillis", userInput);
 						editor.commit();
+						Log.i("Options", "Saved a new setting for newsRefreshTimeMillis: " + userInput);
 					}
 				}
 			}
@@ -44,6 +55,15 @@ public class Activity_Options extends Activity {
 	        public void beforeTextChanged(CharSequence s, int start, int count, int after){}
 			@Override
 	        public void onTextChanged(CharSequence s, int start, int before, int count){}
-	    }); 
+	    });
+		
+		//User inputs whether or not news notifications should be shown
+		newsNotify.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+		    	editor.putBoolean("newsShowNotification", isChecked);
+		    	editor.commit();
+		    	Log.i("Options", "Saved a new setting for newsShowNotification: " + isChecked);
+		    }
+		});
 	}
 }

@@ -19,18 +19,12 @@
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
 		    android:inputType="number" />
-		
-		<TextView
+
+		<CheckBox
+		    android:id="@+id/in_newsnotifications"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:text="Lorum Ipsem"
-		    android:textSize="20sp" />
-		
-		<EditText
-		    android:id="@+id/TMP"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:inputType="number" />
+		    android:text="@string/option_newsnotification" />
 		
 		<TextView
 		    android:layout_width="wrap_content"
