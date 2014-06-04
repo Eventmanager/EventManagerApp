@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.util.Log;
 
 public class PushNotification {
@@ -14,7 +15,7 @@ public class PushNotification {
 	 * @Params startActivity An intent of the activity to be started when the notification is clicked
 	 * @Params icon This must be a referral to R.drawable.XXX If you don't want an custom icon you can use input 0
 	 */
-	public static void sendNotification(Context context, Intent startActivity, String title, String body, int icon){
+	public static void sendNotification(Context context, Intent startActivity, String title, String body, int icon, boolean doVibrate){
 		NotificationManager NM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 				
 		int IconRefAddress = (icon != 0) ? icon : android.R.drawable.stat_notify_more;
@@ -25,6 +26,13 @@ public class PushNotification {
 		notify.setLatestEventInfo(context, title, body, pending);
 		NM.notify(0, notify);
 		Log.i("PushNotification", "just send out a notification " + title + " --- " + body);
+		
+		if(doVibrate){
+			Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+			v.vibrate(500);
+			long[] pattern = {0, 500, 500, 500};
+			v.vibrate(pattern, -1);
+		}
 	}
 	
 	/*

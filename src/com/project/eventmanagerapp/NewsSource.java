@@ -133,7 +133,7 @@ public class NewsSource {
 	private void sendNotification(NewsItem ni){
 		SharedPreferences pref = context.getSharedPreferences("MyPref", 0);
 		if(pref.getBoolean("newsShowNotification", true)){
-			PushNotification.sendNotification(context, new Intent("com.project.eventmanagerapp.Activity_News"), ni.getTitle(), ni.getText(), 0);
+			PushNotification.sendNotification(context, new Intent("com.project.eventmanagerapp.Activity_News"), ni.getTitle(), ni.getText(), 0, true);
 		}
 	}
 }
