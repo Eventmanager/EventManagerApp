@@ -36,8 +36,18 @@ public class ServerCommunication {
 		return fullContent;
 	}
 	
-	public String getPlanningJSonFromServer(){
-		//TODO: implement this method
-		return "JSON MISSING CODE IS TODO";
+	public String getPlanningJSonFromServer() throws IOException{
+		URL url = new URL(serverAddress + "events");//No hardcoding here! Server address is saved in res/values/strings.xml
+		URLConnection con = url.openConnection();
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		
+		String fullContent = "";
+		String parseString;
+		while((parseString  = in.readLine()) != null){
+			fullContent += parseString;
+		}
+		in.close();
+
+		return fullContent;
 	}
 }

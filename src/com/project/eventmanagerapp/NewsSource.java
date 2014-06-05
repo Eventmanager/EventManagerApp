@@ -84,7 +84,7 @@ public class NewsSource {
 	private ArrayList<NewsItem> requestNews(){
 		ArrayList<NewsItem> list = new ArrayList<NewsItem>();
 		String fullJSonString = null;
-				
+
 		try {
 			Log.d("NewsSource", "At: " + System.currentTimeMillis() + " Requesting news from server");
 			ServerCommunication sc = new ServerCommunication(context);
@@ -98,21 +98,7 @@ public class NewsSource {
 		}
 		
 		try {
-			JSONObject obj = new JSONObject(fullJSonString);
-			
-			//System.out.println(obj.getJSONObject("results"))
-			JSONArray arr = obj.getJSONArray("posts");
-			for (int i = 0; i < arr.length(); i++)
-			{
-				JSONObject currentPost = arr.getJSONObject(i);
-				String title = currentPost.getString("title");
-				String id = currentPost.getString("id");
-				String date = currentPost.getString("date");
-				String contents = currentPost.getString("contents");//content'S'
-				
-				list.add(new NewsItem(title, id, date, contents));
-			}
-			
+			list = JSonDecoder.decodeNewsJSon(fullJSonString);
 		} catch (JSONException e) {
 			Log.w("NewsSource", "Can't read the JSON gotten from the server/news");
 			Log.e("NewsSource", Log.getStackTraceString(e));
