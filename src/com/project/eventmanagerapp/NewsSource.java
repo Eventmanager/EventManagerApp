@@ -100,24 +100,17 @@ public class NewsSource {
 		try {
 			JSONObject obj = new JSONObject(fullJSonString);
 			
-			if(obj.getBoolean("success")){
-				//System.out.println(obj.getJSONObject("results"))
-				JSONObject resultObj = obj.getJSONObject("result");
-				JSONArray arr = resultObj.getJSONArray("posts");
-				for (int i = 0; i < arr.length(); i++)
-				{
-					JSONObject currentPost = arr.getJSONObject(i);
-					String title = currentPost.getString("title");
-					String id = currentPost.getString("id");
-					String date = currentPost.getString("date");
-					String contents = currentPost.getString("contents");//content'S'
-					
-					list.add(new NewsItem(title, id, date, contents));
-				}
-			}else{//If server success is false
-				Log.w("NewsSource", "Internal server error while getting news");
-				return list; //Return empty list, other methods should be able to handle that
-				//long lastCheckTime isn't changed, this way connection loss doesn't make you miss out on news items 				
+			//System.out.println(obj.getJSONObject("results"))
+			JSONArray arr = obj.getJSONArray("posts");
+			for (int i = 0; i < arr.length(); i++)
+			{
+				JSONObject currentPost = arr.getJSONObject(i);
+				String title = currentPost.getString("title");
+				String id = currentPost.getString("id");
+				String date = currentPost.getString("date");
+				String contents = currentPost.getString("contents");//content'S'
+				
+				list.add(new NewsItem(title, id, date, contents));
 			}
 			
 		} catch (JSONException e) {
