@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -29,6 +30,7 @@ public class Activity_Planning extends Activity {
 	List<List> textList;
 	SharedPreferences sharedPrefs;
 	JSONArray savedEvents = null;
+	final Context context = this;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,10 @@ public class Activity_Planning extends Activity {
 	    
 		linear = new LinearLayout[planninginfo.length];
 		textList = new ArrayList<List>();
+		
+		ArrayList<ArrayList<PlanningEvent>> temp = PlanningManager.getInstance(context).getPlanning();
+		Log.d("Eerste event", temp.get(0).get(0).getTitle());
+		Log.d("Tweede event", temp.get(0).get(1).getTitle());
 
 		for(int i=0;i<linear.length;i++)
 		{
