@@ -1,6 +1,8 @@
 package com.project.eventmanagerapp;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -27,7 +29,7 @@ import android.widget.TextView;
 public class Activity_Planning extends Activity {
 	
 	LinearLayout [] linear;
-	List<List> textList;
+	List<ArrayList<TextView>> textList;
 	SharedPreferences sharedPrefs;
 	JSONArray savedEvents = null;
 	final Context context = this;
@@ -42,17 +44,14 @@ public class Activity_Planning extends Activity {
 		
 	    LinearLayout mainlinear= (LinearLayout) findViewById(R.id.planninglayout);
 	    
-	    Event[][] planninginfo = new Event[][]{	{new Event("Red Hot Chili Peppers",0,1.2f),new Event("Avenged Sevenfold",1.2f,2.2f),new Event("Avicii",2.2f,3.5f)},
-	    										{new Event("Coldplay",0,1.5f),new Event("Above and Beyond",1.5f,2.5f),new Event("Andrew Rayel",2.5f,3.8f)},
-	    										{new Event("Sonata Arctica",0,1f), new Event("Justin Bieber",1f,1.5f), new Event("Pharrell Williams",1.5f,2.4f), new Event("Afrojack",2.4f,3.5f)}};
 	    
-	    
-		linear = new LinearLayout[planninginfo.length];
-		textList = new ArrayList<List>();
 		
-		ArrayList<ArrayList<PlanningEvent>> temp = PlanningManager.getInstance(context).getPlanning();
-		Log.d("Eerste event", temp.get(0).get(0).getTitle());
-		Log.d("Tweede event", temp.get(0).get(1).getTitle());
+		ArrayList<ArrayList<PlanningEvent>> planninginfo = PlanningManager.getInstance(context).getPlanning();
+		Log.d("Eerste event", planninginfo.get(0).get(0).getTitle());
+		Log.d("Tweede event", planninginfo.get(0).get(1).getTitle());
+		
+		linear = new LinearLayout[planninginfo.size()];
+		textList = new ArrayList<ArrayList<TextView>>();
 
 		for(int i=0;i<linear.length;i++)
 		{
@@ -65,7 +64,7 @@ public class Activity_Planning extends Activity {
 			textList.add(i,new ArrayList<TextView>());
 		
 		
-			TextView [] txt =new TextView[planninginfo[i].length];
+			TextView [] txt =new TextView[planninginfo.get(i).size()];
 			
 	
 			for(int j=0;j<txt.length;j++)
@@ -79,14 +78,15 @@ public class Activity_Planning extends Activity {
 				divider.setBackgroundColor(Color.GRAY);
 				
 				txt[j]=new TextView(Activity_Planning.this);
-				txt[j].setText(planninginfo[i][j].getName());
-				txt[j].setLayoutParams(new LayoutParams(pxtodp(100*planninginfo[i][j].getDuration()),LayoutParams.MATCH_PARENT));
+				txt[j].setText(planninginfo.get(i).get(j).getTitle());
+				//Log.d("currduration", Float.toString(getDuration(planninginfo.get(i).get(j))));
+				txt[j].setLayoutParams(new LayoutParams(pxtodp(100*getDuration(planninginfo.get(i).get(j))),LayoutParams.MATCH_PARENT));
 				txt[j].setGravity(Gravity.CENTER);
 				txt[j].setLines(1);
 				txt[j].setSingleLine(true);
 				txt[j].setEllipsize(TruncateAt.END);
 				txt[j].setTextSize(20);
-				txt[j].setOnClickListener(new EventClickListener(i,j,planninginfo[i][j].getName()));
+				txt[j].setOnClickListener(new EventClickListener(i,j,planninginfo.get(i).get(j).getTitle()));
 				
 				textList.get(i).add(txt[j]);
 				
@@ -128,6 +128,7 @@ public class Activity_Planning extends Activity {
 	protected void onResume(){
 		super.onResume();
 		sharedPrefs = getSharedPreferences("EventPrefs",MODE_PRIVATE);
+		//context.getSharedPreferences("EventPrefs", 0).edit().clear().commit(); // Removes all preferences.
 		if(sharedPrefs.contains("savedevents"))
 		{
 			try {
@@ -150,6 +151,9 @@ public class Activity_Planning extends Activity {
 			try {
 				int podium = ((JSONObject) savedEvents.get(i)).getInt("podium");
 				int event = ((JSONObject) savedEvents.get(i)).getInt("event");
+				/*Log.d("Currpodium/event", podium+", "+event);
+				Log.d("Textsize", Integer.toString(textList.size()));
+				Log.d("Textsizesize", Integer.toString(textList.get(podium).size()));*/
 				((TextView) textList.get(podium).get(event)).setBackgroundColor(Color.RED);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -157,6 +161,25 @@ public class Activity_Planning extends Activity {
 			}
 			
 		}
+	}
+	
+	private float getDuration(PlanningEvent e){
+		GregorianCalendar start = e.getStartTime();
+		GregorianCalendar end = e.getEndTime();
+		
+		float startHour = start.get(Calendar.HOUR_OF_DAY)+start.get(Calendar.MINUTE)/60;
+		float endHour = end.get(Calendar.HOUR_OF_DAY)+end.get(Calendar.MINUTE)/60;
+		
+		/*Log.d("Event",e.getTitle());
+		Log.d("StartHours", Float.toString(startHour));
+		Log.d("EndHours", Float.toString(endHour));*/
+		
+		if(endHour < startHour)
+			endHour+=24;
+		
+		float diff = endHour-startHour;
+		return diff;
+		
 	}
 	
 	private int pxtodp(int px){
