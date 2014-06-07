@@ -45,7 +45,7 @@ public class JSonDecoder {
 			GregorianCalendar startTime = convertStringToGregorianCalendar(startTimeString);
 			GregorianCalendar endTime = convertStringToGregorianCalendar(endTimeString);
 			
-			returnList.add(new PlanningEvent(id, title, startTime, endTime, stage));
+			returnList.add(new PlanningEvent(id, title, startTime, endTime, stage,"")); //Description is currently an empty string. Replace it with a variable.
 		}
 		
 		return returnList;

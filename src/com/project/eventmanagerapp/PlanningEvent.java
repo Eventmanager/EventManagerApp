@@ -8,13 +8,15 @@ public class PlanningEvent {
 	private GregorianCalendar startTime;
 	private GregorianCalendar endTime;
 	private String stage;
+	private String description;
 	
-	public PlanningEvent(String _id, String _title, GregorianCalendar _startTime, GregorianCalendar _endTime, String _stage) {
+	public PlanningEvent(String _id, String _title, GregorianCalendar _startTime, GregorianCalendar _endTime, String _stage, String _description) {
 		id = _id;
 		title = _title;
 		startTime = _startTime;
 		endTime = _endTime;
 		stage = _stage;
+		description = _description;
 	}
 
 	public String getTitle() {
@@ -51,5 +53,12 @@ public class PlanningEvent {
 
 	public String getId() {
 		return id;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }
