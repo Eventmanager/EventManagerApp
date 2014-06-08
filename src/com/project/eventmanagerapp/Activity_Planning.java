@@ -86,7 +86,7 @@ public class Activity_Planning extends Activity {
 				txt[j].setSingleLine(true);
 				txt[j].setEllipsize(TruncateAt.END);
 				txt[j].setTextSize(20);
-				txt[j].setOnClickListener(new EventClickListener(i,j,planninginfo.get(i).get(j).getTitle()));
+				txt[j].setOnClickListener(new EventClickListener(i,j,planninginfo.get(i).get(j)));
 				
 				textList.get(i).add(txt[j]);
 				
@@ -170,10 +170,6 @@ public class Activity_Planning extends Activity {
 		float startHour = start.get(Calendar.HOUR_OF_DAY)+start.get(Calendar.MINUTE)/60;
 		float endHour = end.get(Calendar.HOUR_OF_DAY)+end.get(Calendar.MINUTE)/60;
 		
-		/*Log.d("Event",e.getTitle());
-		Log.d("StartHours", Float.toString(startHour));
-		Log.d("EndHours", Float.toString(endHour));*/
-		
 		if(endHour < startHour)
 			endHour+=24;
 		
@@ -189,51 +185,16 @@ public class Activity_Planning extends Activity {
 		return (int)(getResources().getDisplayMetrics().density*px);
 	}
 	
-	private class Event{
-		
-		String name = "";
-		float start = 0;
-		float end = 0;
-
-		public Event(String n, float s, float e){
-			this.name = n;
-			this.start = s;
-			this.end = e;
-		}
-		
-		private void setName(String n){
-			this.name = n;
-		}
-		private void setStart(float s){
-			this.start = s;
-		}
-		private void setEnd(float e){
-			this.end = e;
-		}
-		private String getName(){
-			return this.name;
-		}
-		private float getStart(){
-			return this.start;
-		}
-		private float getEnd(){
-			return this.end;
-		}
-		private float getDuration(){
-			return this.end-this.start;
-		}
-	}
-	
 	public class EventClickListener implements OnClickListener
 	   {
 
 	     int podium;
 	     int event;
-	     String name;
-	     public EventClickListener(int p,int e,String n) {
+	     PlanningEvent e;
+	     public EventClickListener(int p,int e,PlanningEvent n) {
 	          this.podium = p;
 	          this.event = e;
-	          this.name = n;
+	          this.e = n;
 	     }
 
 	     @Override
@@ -242,7 +203,7 @@ public class Activity_Planning extends Activity {
 	    	 Intent newpage = new Intent("com.project.eventmanagerapp.Activity_Planninginfo");		
 	    	 newpage.putExtra("podium_id", this.podium);
 	    	 newpage.putExtra("event_id", this.event);
-	    	 newpage.putExtra("event_name",this.name);
+	    	 newpage.putExtra("planning_event",this.e);
 	    	 startActivity(newpage);
 	     }
 

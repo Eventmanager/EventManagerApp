@@ -1,7 +1,10 @@
 package com.project.eventmanagerapp;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +16,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils.TruncateAt;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,6 +36,7 @@ public class Activity_Planninginfo extends Activity {
 	JSONArray savedEvents = null;
 	List<JSONObject> savedEventsList = new ArrayList<JSONObject>();
 	SharedPreferences sharedPrefs;
+	PlanningEvent selectedEvent;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +45,15 @@ public class Activity_Planninginfo extends Activity {
 		Intent myIntent = getIntent();
 		current_podium = myIntent.getIntExtra("podium_id",0);
 		current_event = myIntent.getIntExtra("event_id",0);
-
-		TextView txt=new TextView(Activity_Planninginfo.this);
-		txt.setText(myIntent.getStringExtra("event_name"));
-		txt.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
-		LinearLayout mainlinear= (LinearLayout) findViewById(R.id.eventinfo_layout);
-		mainlinear.addView(txt);
+		selectedEvent = (PlanningEvent)myIntent.getSerializableExtra("planning_event");
+		
+		Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		
+		((TextView)findViewById(R.id.info_event_title)).setText(selectedEvent.getTitle());
+		((TextView)findViewById(R.id.info_event_start)).setText(Html.fromHtml("<b>Start date</b>: "+formatter.format(selectedEvent.getStartTime().getTime())));
+		((TextView)findViewById(R.id.info_event_end)).setText(Html.fromHtml("<b>End date</b>: "+formatter.format(selectedEvent.getEndTime().getTime())));
+		((TextView)findViewById(R.id.info_event_podium)).setText(Html.fromHtml("<b>Stage</b>: "+selectedEvent.getStage()));
+		((TextView)findViewById(R.id.info_event_description)).setText(selectedEvent.getDescription());
 		
 		sharedPrefs = getSharedPreferences("EventPrefs",MODE_PRIVATE);
 		if(sharedPrefs.contains("savedevents"))
@@ -59,13 +68,11 @@ public class Activity_Planninginfo extends Activity {
 			savedEvents = new JSONArray();
 		
 		savedEventsList = jsonToList(savedEvents);
-
-		Log.d("String",savedEvents.toString());
 		
-		Button bt = new Button(this);
-		bt.setText("Add event");
-		bt.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
-		bt.setOnClickListener(new View.OnClickListener() {			
+		final Button removeButton = ((Button) findViewById(R.id.button_remove_event));
+		final Button saveButton = ((Button) findViewById(R.id.button_save_event));
+
+		saveButton.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				saveEvent(current_podium,current_event);
@@ -73,13 +80,12 @@ public class Activity_Planninginfo extends Activity {
 				Editor editor = sharedPrefs.edit();
 				editor.putString("savedevents",savedEvents.toString());
 				editor.commit();
+				saveButton.setVisibility(View.GONE);
+				removeButton.setVisibility(View.VISIBLE);
 			}
 		});
 		
-		Button bt2 = new Button(this);
-		bt2.setText("Remove event");
-		bt2.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
-		bt2.setOnClickListener(new View.OnClickListener() {			
+		removeButton.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				removeEvent(current_podium,current_event);
@@ -87,21 +93,28 @@ public class Activity_Planninginfo extends Activity {
 				Editor editor = sharedPrefs.edit();
 				editor.putString("savedevents",savedEvents.toString());
 				editor.commit();
+				removeButton.setVisibility(View.GONE);
+				saveButton.setVisibility(View.VISIBLE);
 			}
 		});
 		
-		mainlinear.addView(bt);
-		mainlinear.addView(bt2);
+		try{
+			if(isEventSaved(current_podium,current_event))
+				removeButton.setVisibility(View.VISIBLE);
+			else
+				saveButton.setVisibility(View.VISIBLE);
+		}
+		catch(JSONException e){
+			Log.d("Exception", "Woops, json exception for the buttons");
+		}
 		
 		
 	}
 	
 	private void saveEvent(int podium, int event){
 		try{
-			for(JSONObject i : savedEventsList)
-				if(i.getInt("podium") == podium && i.getInt("event") == event)
-					return;
-			savedEventsList.add(new JSONObject().put("podium", podium).put("event", event));
+			if(!isEventSaved(podium,event))
+				savedEventsList.add(new JSONObject().put("podium", podium).put("event", event));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -117,6 +130,13 @@ public class Activity_Planninginfo extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private boolean isEventSaved(int podium,int event) throws JSONException{
+		for(JSONObject i : savedEventsList)
+			if(i.getInt("podium") == podium && i.getInt("event") == event)
+				return true;
+		return false;
 	}
 	
 	private List jsonToList(JSONArray arr){

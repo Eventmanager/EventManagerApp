@@ -1,8 +1,10 @@
 package com.project.eventmanagerapp;
 
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 
-public class PlanningEvent {
+@SuppressWarnings("serial")
+public class PlanningEvent implements Serializable{
 	private String id;
 	private String title;
 	private GregorianCalendar startTime;

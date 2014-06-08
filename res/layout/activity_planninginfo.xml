@@ -8,6 +8,42 @@
     <TextView 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Informatie over evenementen"/>
+        android:id="@+id/info_event_title"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_event_start"/>
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_event_end"/>
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_event_podium"/>
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_event_description"/>
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_save_event" 
+        android:visibility="gone"
+        android:text="Save event"/>
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/button_remove_event" 
+        android:text="Remove event" />
 
 </LinearLayout>
