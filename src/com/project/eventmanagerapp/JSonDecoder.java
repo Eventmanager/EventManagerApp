@@ -41,11 +41,12 @@ public class JSonDecoder {
 			String startTimeString = currentPost.getString("starttime");
 			String endTimeString = currentPost.getString("endtime");
 			String stage = currentPost.getString("stage");
+			String description = currentPost.getString("description");
 			
 			GregorianCalendar startTime = convertStringToGregorianCalendar(startTimeString);
 			GregorianCalendar endTime = convertStringToGregorianCalendar(endTimeString);
 			
-			returnList.add(new PlanningEvent(id, title, startTime, endTime, stage,"")); //Description is currently an empty string. Replace it with a variable.
+			returnList.add(new PlanningEvent(id, title, startTime, endTime, stage, description)); //Description is currently an empty string. Replace it with a variable.
 		}
 		
 		return returnList;
