@@ -2,6 +2,7 @@ package com.project.eventmanagerapp;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.ConcurrentModificationException;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class Activity_Planning extends Activity {
 	SharedPreferences sharedPrefs;
 	JSONArray savedEvents = null;
 	final Context context = this;
+	ArrayList<ArrayList<PlanningEvent>> planninginfo = new ArrayList<ArrayList<PlanningEvent>>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,12 @@ public class Activity_Planning extends Activity {
 	    LinearLayout mainlinear= (LinearLayout) findViewById(R.id.planninglayout);
 	    
 	    
-		
-		ArrayList<ArrayList<PlanningEvent>> planninginfo = PlanningManager.getInstance(context).getPlanning();
-		Log.d("Eerste event", planninginfo.get(0).get(0).getTitle());
-		Log.d("Tweede event", planninginfo.get(0).get(1).getTitle());
+		try{
+			planninginfo = PlanningManager.getInstance(context).getPlanning();
+		}
+		catch(ConcurrentModificationException e){
+			e.printStackTrace();
+		}
 		
 		linear = new LinearLayout[planninginfo.size()];
 		textList = new ArrayList<ArrayList<TextView>>();
@@ -151,12 +155,13 @@ public class Activity_Planning extends Activity {
 			try {
 				int podium = ((JSONObject) savedEvents.get(i)).getInt("podium");
 				int event = ((JSONObject) savedEvents.get(i)).getInt("event");
-				/*Log.d("Currpodium/event", podium+", "+event);
-				Log.d("Textsize", Integer.toString(textList.size()));
-				Log.d("Textsizesize", Integer.toString(textList.get(podium).size()));*/
 				((TextView) textList.get(podium).get(event)).setBackgroundColor(Color.RED);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch(IndexOutOfBoundsException e)
+			{
 				e.printStackTrace();
 			}
 			

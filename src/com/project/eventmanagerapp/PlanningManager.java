@@ -1,6 +1,7 @@
 package com.project.eventmanagerapp;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import org.json.JSONException;
@@ -30,7 +31,7 @@ public class PlanningManager {
 	
 	
 	
-	public ArrayList<ArrayList<PlanningEvent>> getPlanning(){
+	public ArrayList<ArrayList<PlanningEvent>> getPlanning() throws ConcurrentModificationException{
 		Thread c = new Thread(new Runnable(){
 			public void run(){
 				NewsItem notifyNews = null;
