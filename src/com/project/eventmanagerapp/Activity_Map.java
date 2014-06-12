@@ -1,11 +1,14 @@
 package com.project.eventmanagerapp;
 
+import java.util.ArrayList;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 
@@ -14,12 +17,18 @@ import android.os.Bundle;
 public class Activity_Map extends FragmentActivity {
 
 	private GoogleMap eventMap;
+	ArrayList<MapImage> mapImages;
+	ArrayList<MapShape> mapShapes;
+	final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         setUpMapIfNeeded();
+        ArrayList<ArrayList> temp = MapManager.getInstance(context).getMapItems();
+        mapImages = temp.get(0);
+        mapShapes = temp.get(1);
     }
 
     @Override
