@@ -1,5 +1,7 @@
 package com.project.eventmanagerapp;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class MapImage {
 	private int width;
 	private float rotation;
@@ -15,8 +17,8 @@ public class MapImage {
 		this.longitude = longitude;
 	}
 
-	public int getWidth() {
-		return width;
+	public float getWidth() {
+		return (float)width;
 	}
 
 	public void setWidth(int width) {
@@ -53,5 +55,9 @@ public class MapImage {
 
 	public void setLongitude(float longitude) {
 		this.longitude = longitude;
+	}
+	
+	public LatLng getCoords(){
+		return new LatLng(this.latitude,this.longitude);
 	}
 }

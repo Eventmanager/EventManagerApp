@@ -11,24 +11,27 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import android.os.Bundle;
 
 public class Activity_Map extends FragmentActivity {
 
 	private GoogleMap eventMap;
-	ArrayList<MapImage> mapImages;
-	ArrayList<MapShape> mapShapes;
+	ArrayList<MapImage> mapImages = new ArrayList<MapImage>();
+	ArrayList<MapShape> mapShapes = new ArrayList<MapShape>();
 	final Context context = this;
+	ArrayList<Polygon> shapeList = new ArrayList<Polygon>();
+	ArrayList<GroundOverlay> imageList = new ArrayList<GroundOverlay>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        setUpMapIfNeeded();
         ArrayList<ArrayList> temp = MapManager.getInstance(context).getMapItems();
         mapImages = temp.get(0);
         mapShapes = temp.get(1);
+        setUpMapIfNeeded();
     }
 
     @Override
@@ -52,18 +55,21 @@ public class Activity_Map extends FragmentActivity {
     
     private void setUpMap() {
     	eventMap.addMarker(new MarkerOptions().position(new LatLng(51.9167, 4.5000)).title("Rotterdam"));
-    	eventMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.9167, 4.5000), 12.0f));
-    	
-    	//Example code for shapes. In this case a triangle near the marker.
-    	/*Polygon poly1 = new ShapeBuilder().points(new float[][]{{51.9167f,4.5000f},{51.9177f,4.5006f},{51.9157f,4.5090f}}).build();
-    	Polygon poly2 = new ShapeBuilder().points(new float[][]{{51.9187f,4.5000f},{51.9197f,4.5006f},{51.9177f,4.5090f}})
-    			.width(5f).fill(Color.RED).stroke(Color.BLUE).build();*/
-    	
-    	//Example code for an image. In this case near the marker.
-    	/*GroundOverlay image1 = new ImageBuilder().position(new LatLng(51.9167, 4.4980)).width(2000f).image("house").build();*/
-    	
+    	//eventMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.9167, 4.5000), 12.0f));
+   
     	//Example code for drawing a semi-transparent circle.
-    	Circle circle1 = new CircleBuilder().position(new LatLng(51.9167, 4.4980)).radius(3000).stroke(Color.GREEN).fill(Color.argb(50,200,0,0)).strokeWidth(3f).build();
+    	//Circle circle1 = new CircleBuilder().position(new LatLng(51.9167, 4.4980)).radius(3000).stroke(Color.GREEN).fill(Color.argb(50,200,0,0)).strokeWidth(3f).build();
+    
+    	for(MapShape s: mapShapes)
+    	{
+    		shapeList.add(new ShapeBuilder().points(s.getPoints()).width(s.getWidth()).fill(s.getColor()).stroke(s.getStroke()).build());
+    	}
+    	
+    	for(MapImage i: mapImages)
+    	{
+    		imageList.add(new ImageBuilder().position(i.getCoords()).width(i.getWidth()*10000).image(i.getImageName()).build());
+    	}
+    
     }
     
     

@@ -59,7 +59,7 @@ public class MapManager {
 		try {
 			Log.d("MapManager", "At: " + System.currentTimeMillis() + " Requesting map images from server");
 			ServerCommunication sc = new ServerCommunication(context);
-			fullJSonString = sc.getPlanningJSonFromServer();
+			fullJSonString = sc.getMapItemJSonFromServer();
 			Log.d("MapManager", "At: " + System.currentTimeMillis() + " Got the map images from server. Start parsing it");
 		} catch (Exception e) {
 			Log.w("MapManager", "Could not get map images from server, possible connection problem (?)");
@@ -87,7 +87,7 @@ public class MapManager {
 		try {
 			Log.d("MapManager", "At: " + System.currentTimeMillis() + " Requesting map shapes from server");
 			ServerCommunication sc = new ServerCommunication(context);
-			fullJSonString = sc.getPlanningJSonFromServer();
+			fullJSonString = sc.getMapItemJSonFromServer();
 			Log.d("MapManager", "At: " + System.currentTimeMillis() + " Got the map shapes from server. Start parsing it");
 		} catch (Exception e) {
 			Log.w("MapManager", "Could not get map shapes from server, possible connection problem (?)");

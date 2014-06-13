@@ -15,8 +15,8 @@ public class MapShape {
 		this.stroke = stroke2;
 	}
 	
-	public int getWidth() {
-		return width;
+	public float getWidth() {
+		return (float)this.width;
 	}
 	public void setWidth(int width) {
 		this.width = width;
