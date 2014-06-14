@@ -15,7 +15,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -27,7 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
-public class Activity_Planning extends Activity {
+public class Activity_Planning extends FragmentActivity {
 	
 	LinearLayout [] linear;
 	List<ArrayList<TextView>> textList;
@@ -35,14 +37,12 @@ public class Activity_Planning extends Activity {
 	JSONArray savedEvents = null;
 	final Context context = this;
 	ArrayList<ArrayList<PlanningEvent>> planninginfo = new ArrayList<ArrayList<PlanningEvent>>();
+	GregorianCalendar eventstart = null,eventend = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_planning);
-		
-		int eventstart = 20;
-		int eventend = 2;
 		
 	    LinearLayout mainlinear= (LinearLayout) findViewById(R.id.planninglayout);
 	    
@@ -56,6 +56,20 @@ public class Activity_Planning extends Activity {
 		
 		linear = new LinearLayout[planninginfo.size()];
 		textList = new ArrayList<ArrayList<TextView>>();
+		
+		for(ArrayList<PlanningEvent> l : planninginfo)
+			for(PlanningEvent e : l)
+			{
+				if(eventstart == null)
+					eventstart = e.getStartTime();
+				else if(e.getStartTime().compareTo(eventstart) < 0)
+					eventstart = e.getStartTime();
+				
+				if(eventend == null)
+					eventend = e.getEndTime();
+				else if(e.getEndTime().compareTo(eventend) > 0)
+					eventend = e.getEndTime();
+			}
 
 		for(int i=0;i<linear.length;i++)
 		{
@@ -84,18 +98,31 @@ public class Activity_Planning extends Activity {
 				txt[j]=new TextView(Activity_Planning.this);
 				txt[j].setText(planninginfo.get(i).get(j).getTitle());
 				//Log.d("currduration", Float.toString(getDuration(planninginfo.get(i).get(j))));
-				txt[j].setLayoutParams(new LayoutParams(pxtodp(100*getDuration(planninginfo.get(i).get(j))),LayoutParams.MATCH_PARENT));
+				txt[j].setLayoutParams(new LayoutParams(pxtodp(100f*getDuration(planninginfo.get(i).get(j))-10f),LayoutParams.MATCH_PARENT));
 				txt[j].setGravity(Gravity.CENTER);
 				txt[j].setLines(1);
 				txt[j].setSingleLine(true);
 				txt[j].setEllipsize(TruncateAt.END);
 				txt[j].setTextSize(20);
+				txt[j].setBackgroundColor(Color.LTGRAY);
 				txt[j].setOnClickListener(new EventClickListener(i,j,planninginfo.get(i).get(j)));
 				
 				textList.get(i).add(txt[j]);
 				
+				if(j==0)
+				{
+					TextView empty = new TextView(Activity_Planning.this);
+					empty.setLayoutParams(new LayoutParams(pxtodp(18f+100f*gregorianDifference(eventstart,planninginfo.get(i).get(j).getStartTime())),LayoutParams.MATCH_PARENT));
+					linear[i].addView(empty);
+					
+					TextView div = new TextView(Activity_Planning.this);
+				    div.setLayoutParams(llp);
+					div.setBackgroundColor(Color.GRAY);
+					linear[i].addView(div);
+				}
+				
 				linear[i].addView(txt[j]);
-				if(j != txt.length-1)
+				//if(j != txt.length-1)
 					linear[i].addView(divider);
 			}
 		}
@@ -106,23 +133,31 @@ public class Activity_Planning extends Activity {
 		mainlinear.addView(li, params);
 		li.setOrientation(LinearLayout.HORIZONTAL);
 		
-		eventend +=24;
+		TextView time = null;
 		
-		for(int curtime = eventstart;curtime <= eventend;curtime++)
+		int iter = 0;
+		if(eventend.get(Calendar.MINUTE) > 0)
+			eventend.add(Calendar.HOUR_OF_DAY,1);
+		while(eventstart.compareTo(eventend) < 0)
 		{
-			if(curtime >= 24)
+			int w = 0;
+			String content = "";
+			if(time != null)
 			{
-				curtime = 0;
-				eventend -=24;
+				time.measure(0, 0);
+				w = time.getMeasuredWidth();
+				content = (String) time.getText();
 			}
 			
-			TextView time = new TextView(Activity_Planning.this);
-			time.setText(curtime+":00");
+			time = new TextView(Activity_Planning.this);
+			time.setText(eventstart.get(Calendar.HOUR_OF_DAY)+":00");
 			LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		    if(curtime != eventstart)
-		    	llp.setMargins(pxtodp(100), 0, 0, 0); // llp.setMargins(left, top, right, bottom);
+			if(iter!=0)
+				llp.setMargins(pxtodp(100-w), 0, 0, 0); // llp.setMargins(left, top, right, bottom);
 		    time.setLayoutParams(llp);
 			li.addView(time);
+			iter++;
+			eventstart.add(Calendar.HOUR_OF_DAY, 1);
 		}
 		
 		
@@ -146,7 +181,7 @@ public class Activity_Planning extends Activity {
 		
 		for(List l : textList){
 			for(Object v : l){
-				((TextView)v).setBackgroundColor(Color.WHITE);
+				((TextView)v).setBackgroundColor(0x22cccccc);
 			}
 		}
 		
@@ -172,15 +207,20 @@ public class Activity_Planning extends Activity {
 		GregorianCalendar start = e.getStartTime();
 		GregorianCalendar end = e.getEndTime();
 		
-		float startHour = start.get(Calendar.HOUR_OF_DAY)+start.get(Calendar.MINUTE)/60;
-		float endHour = end.get(Calendar.HOUR_OF_DAY)+end.get(Calendar.MINUTE)/60;
+		return gregorianDifference(start,end);
+		
+	}
+	
+	private float gregorianDifference(GregorianCalendar first, GregorianCalendar second)
+	{
+		float startHour = first.get(Calendar.HOUR_OF_DAY)+first.get(Calendar.MINUTE)/60f;
+		float endHour = second.get(Calendar.HOUR_OF_DAY)+second.get(Calendar.MINUTE)/60f;
 		
 		if(endHour < startHour)
 			endHour+=24;
 		
 		float diff = endHour-startHour;
 		return diff;
-		
 	}
 	
 	private int pxtodp(int px){
@@ -213,4 +253,10 @@ public class Activity_Planning extends Activity {
 	     }
 
 	  };
+	  
+	  @Override
+	  public void onDestroy() {
+		  super.onDestroy();
+	      planninginfo = new ArrayList<ArrayList<PlanningEvent>>();
+	  }
 }

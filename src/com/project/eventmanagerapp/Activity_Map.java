@@ -1,5 +1,8 @@
 package com.project.eventmanagerapp;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -9,6 +12,8 @@ import com.google.android.gms.maps.model.*;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -67,9 +72,9 @@ public class Activity_Map extends FragmentActivity {
     	
     	for(MapImage i: mapImages)
     	{
-    		imageList.add(new ImageBuilder().position(i.getCoords()).width(i.getWidth()*10000).image(i.getImageName()).build());
+    		imageList.add(new ImageBuilder().position(i.getCoords()).width(i.getWidth()*10000).image(i.getImageName()).rotation(i.getRotation()).build());
     	}
-    
+    	
     }
     
     
@@ -82,7 +87,7 @@ public class Activity_Map extends FragmentActivity {
     	LatLng position;
     	Float width = null;
     	Float rotation = null;
-    	String image = null;
+    	URL image = null;
     	
     	public ImageBuilder(){}
     	
@@ -102,7 +107,12 @@ public class Activity_Map extends FragmentActivity {
     	}
     	
     	public ImageBuilder image(String image){
-    		this.image= image;
+    		try {
+				this.image= new URL(image);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     		return this;
     	}
     	
@@ -110,7 +120,19 @@ public class Activity_Map extends FragmentActivity {
     		GroundOverlayOptions im = new GroundOverlayOptions();
     		
     		if(this.image != null)
-    			im.image(BitmapDescriptorFactory.fromResource(getResources().getIdentifier(this.image, "drawable", getPackageName())));
+    		{
+    			//im.image(BitmapDescriptorFactory.fromResource(getResources().getIdentifier(this.image, "drawable", getPackageName())));
+    			
+				try {
+					Bitmap image = null;
+					image = BitmapFactory.decodeStream(this.image.openConnection().getInputStream());
+					im.image(BitmapDescriptorFactory.fromBitmap(image));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    			
+    		}
             
     		if(this.position != null && this.width != null)
             	im.position(this.position, this.width);

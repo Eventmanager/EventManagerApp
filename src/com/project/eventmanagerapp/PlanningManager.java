@@ -44,14 +44,14 @@ public class PlanningManager {
 					
 					int podium_id = podiumList.indexOf(planE.getStage());
 					
-					ArrayList<PlanningEvent> currentPodiumList = planningList.get(podium_id);
-					if(currentPodiumList.size() != 0)
+					//ArrayList<PlanningEvent> currentPodiumList = planningList.get(podium_id);
+					if(planningList.get(podium_id).size() != 0)
 					{
 						boolean notyetadded = true;
-						for(PlanningEvent p : currentPodiumList)
+						for(PlanningEvent p : planningList.get(podium_id))
 							if(planE.getStartTime().compareTo(p.getStartTime()) < 0 && notyetadded)
 							{
-								planningList.get(podium_id).add(currentPodiumList.indexOf(p),planE);
+								planningList.get(podium_id).add(planningList.get(podium_id).indexOf(p),planE);
 								notyetadded = false;
 							}
 						if(notyetadded)
@@ -61,14 +61,18 @@ public class PlanningManager {
 						planningList.get(podium_id).add(planE);
 								
 				}
+				//currentPodiumList = null;
 				
 			}}
 		);
-		c.start();
 		try {
+			c.start();
 			c.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch(ConcurrentModificationException e)
+		{
 			e.printStackTrace();
 		}
 		return planningList;
