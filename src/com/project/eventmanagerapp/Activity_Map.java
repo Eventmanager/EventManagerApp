@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +19,7 @@ import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 public class Activity_Map extends FragmentActivity {
@@ -62,9 +64,6 @@ public class Activity_Map extends FragmentActivity {
     	eventMap.addMarker(new MarkerOptions().position(new LatLng(51.9167, 4.5000)).title("Rotterdam"));
     	//eventMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.9167, 4.5000), 12.0f));
    
-    	//Example code for drawing a semi-transparent circle.
-    	//Circle circle1 = new CircleBuilder().position(new LatLng(51.9167, 4.4980)).radius(3000).stroke(Color.GREEN).fill(Color.argb(50,200,0,0)).strokeWidth(3f).build();
-    
     	for(MapShape s: mapShapes)
     	{
     		shapeList.add(new ShapeBuilder().points(s.getPoints()).width(s.getWidth()).fill(s.getColor()).stroke(s.getStroke()).build());
@@ -72,7 +71,7 @@ public class Activity_Map extends FragmentActivity {
     	
     	for(MapImage i: mapImages)
     	{
-    		imageList.add(new ImageBuilder().position(i.getCoords()).width(i.getWidth()*10000).image(i.getImageName()).rotation(i.getRotation()).build());
+    		new DrawImageTask().execute(i);
     	}
     	
     }
@@ -87,7 +86,7 @@ public class Activity_Map extends FragmentActivity {
     	LatLng position;
     	Float width = null;
     	Float rotation = null;
-    	URL image = null;
+    	Bitmap image = null;
     	
     	public ImageBuilder(){}
     	
@@ -106,13 +105,8 @@ public class Activity_Map extends FragmentActivity {
     		return this;
     	}
     	
-    	public ImageBuilder image(String image){
-    		try {
-				this.image= new URL(image);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    	public ImageBuilder image(Bitmap image){
+			this.image= image;
     		return this;
     	}
     	
@@ -122,15 +116,9 @@ public class Activity_Map extends FragmentActivity {
     		if(this.image != null)
     		{
     			//im.image(BitmapDescriptorFactory.fromResource(getResources().getIdentifier(this.image, "drawable", getPackageName())));
-    			
-				try {
-					Bitmap image = null;
-					image = BitmapFactory.decodeStream(this.image.openConnection().getInputStream());
-					im.image(BitmapDescriptorFactory.fromBitmap(image));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
+				im.image(BitmapDescriptorFactory.fromBitmap(image));
+				
     			
     		}
             
@@ -238,6 +226,34 @@ public class Activity_Map extends FragmentActivity {
     		return eventMap.addCircle(circle);
     	}
     	
+    }
+    
+    class DrawImageTask extends AsyncTask<MapImage, int[], MapImage> {
+
+    	Bitmap imagery;
+        @Override
+        protected MapImage doInBackground(MapImage... params) {
+          Bitmap bitmap = null;
+
+          try {
+			bitmap = BitmapFactory.decodeStream(new URL(params[0].getImageName()).openConnection().getInputStream());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+          this.imagery = bitmap;
+          return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(MapImage result) {
+          super.onPostExecute(result);
+          //return bitmapResult;
+          imageList.add(new ImageBuilder().position(result.getCoords()).width(result.getWidth()).image(imagery).rotation(result.getRotation()).build());
+        }
     }
      
 }
