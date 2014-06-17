@@ -62,7 +62,7 @@ public class Activity_Map extends FragmentActivity {
     
     private void setUpMap() {
     	eventMap.addMarker(new MarkerOptions().position(new LatLng(51.9167, 4.5000)).title("Rotterdam"));
-    	//eventMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.9167, 4.5000), 12.0f));
+    	eventMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.967978, 4.515135), 15f));
    
     	for(MapShape s: mapShapes)
     	{
@@ -127,6 +127,8 @@ public class Activity_Map extends FragmentActivity {
         	
     		if(rotation != null)
         		im.bearing(this.rotation);
+    		
+    		im.zIndex(5f);
         	
         	return eventMap.addGroundOverlay(im);
     	}
@@ -173,6 +175,8 @@ public class Activity_Map extends FragmentActivity {
         		poly.strokeWidth(this.width);
     		if(this.stroke != null)
         		poly.strokeColor(this.stroke);
+    		
+    		poly.zIndex(3f);
     		
     		return eventMap.addPolygon(poly);
     	}
