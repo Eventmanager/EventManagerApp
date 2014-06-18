@@ -98,7 +98,7 @@ public class Activity_Planning extends FragmentActivity {
 				txt[j]=new TextView(Activity_Planning.this);
 				txt[j].setText(planninginfo.get(i).get(j).getTitle());
 				//Log.d("currduration", Float.toString(getDuration(planninginfo.get(i).get(j))));
-				txt[j].setLayoutParams(new LayoutParams(pxtodp(100f*getDuration(planninginfo.get(i).get(j))-10f),LayoutParams.MATCH_PARENT));
+				txt[j].setLayoutParams(new LayoutParams(pxtodp(100f*getDuration(planninginfo.get(i).get(j))-12f),LayoutParams.MATCH_PARENT));
 				txt[j].setGravity(Gravity.CENTER);
 				txt[j].setLines(1);
 				txt[j].setSingleLine(true);
@@ -112,13 +112,29 @@ public class Activity_Planning extends FragmentActivity {
 				if(j==0)
 				{
 					TextView empty = new TextView(Activity_Planning.this);
-					empty.setLayoutParams(new LayoutParams(pxtodp(18f+100f*gregorianDifference(eventstart,planninginfo.get(i).get(j).getStartTime())),LayoutParams.MATCH_PARENT));
+					empty.setLayoutParams(new LayoutParams(pxtodp(16f+100f*gregorianDifference(eventstart,planninginfo.get(i).get(j).getStartTime())),LayoutParams.MATCH_PARENT));
 					linear[i].addView(empty);
 					
 					TextView div = new TextView(Activity_Planning.this);
 				    div.setLayoutParams(llp);
 					div.setBackgroundColor(Color.GRAY);
 					linear[i].addView(div);
+				}
+				else
+				{
+					GregorianCalendar previous = planninginfo.get(i).get(j-1).getEndTime();
+					previous.add(Calendar.MINUTE,3);
+					if(planninginfo.get(i).get(j).getStartTime().compareTo(previous) > 0)
+					{
+						TextView empty = new TextView(Activity_Planning.this);
+						empty.setLayoutParams(new LayoutParams(pxtodp(-12f+100f*gregorianDifference(planninginfo.get(i).get(j-1).getEndTime(),planninginfo.get(i).get(j).getStartTime())),LayoutParams.MATCH_PARENT));
+						linear[i].addView(empty);
+						
+						TextView div = new TextView(Activity_Planning.this);
+					    div.setLayoutParams(llp);
+						div.setBackgroundColor(Color.GRAY);
+						linear[i].addView(div);
+					}
 				}
 				
 				linear[i].addView(txt[j]);
@@ -166,8 +182,8 @@ public class Activity_Planning extends FragmentActivity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		sharedPrefs = getSharedPreferences("EventPrefs",MODE_PRIVATE);
 		//context.getSharedPreferences("EventPrefs", 0).edit().clear().commit(); // Removes all preferences.
+		sharedPrefs = getSharedPreferences("EventPrefs",MODE_PRIVATE);
 		if(sharedPrefs.contains("savedevents"))
 		{
 			try {
@@ -190,7 +206,7 @@ public class Activity_Planning extends FragmentActivity {
 			try {
 				int podium = ((JSONObject) savedEvents.get(i)).getInt("podium");
 				int event = ((JSONObject) savedEvents.get(i)).getInt("event");
-				((TextView) textList.get(podium).get(event)).setBackgroundColor(Color.RED);
+				((TextView) textList.get(podium).get(event)).setBackgroundColor(0xff66ff66);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

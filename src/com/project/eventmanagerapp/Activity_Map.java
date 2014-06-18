@@ -61,12 +61,12 @@ public class Activity_Map extends FragmentActivity {
     }
     
     private void setUpMap() {
-    	eventMap.addMarker(new MarkerOptions().position(new LatLng(51.9167, 4.5000)).title("Rotterdam"));
+    	eventMap.addMarker(new MarkerOptions().position(new LatLng(51.967978, 4.515135)).title("Event"));
     	eventMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.967978, 4.515135), 15f));
    
     	for(MapShape s: mapShapes)
     	{
-    		shapeList.add(new ShapeBuilder().points(s.getPoints()).width(s.getWidth()).fill(s.getColor()).stroke(s.getStroke()).build());
+    		new DrawShapeTask().execute(s);
     	}
     	
     	for(MapImage i: mapImages)
@@ -242,10 +242,8 @@ public class Activity_Map extends FragmentActivity {
           try {
 			bitmap = BitmapFactory.decodeStream(new URL(params[0].getImageName()).openConnection().getInputStream());
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
           this.imagery = bitmap;
@@ -255,8 +253,21 @@ public class Activity_Map extends FragmentActivity {
         @Override
         protected void onPostExecute(MapImage result) {
           super.onPostExecute(result);
-          //return bitmapResult;
           imageList.add(new ImageBuilder().position(result.getCoords()).width(result.getWidth()).image(imagery).rotation(result.getRotation()).build());
+        }
+    }
+    
+    class DrawShapeTask extends AsyncTask<MapShape, int[], MapShape> {
+
+        @Override
+        protected MapShape doInBackground(MapShape... params) {
+          return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(MapShape result) {
+          super.onPostExecute(result);
+          shapeList.add(new ShapeBuilder().points(result.getPoints()).width(result.getWidth()).fill(result.getColor()).stroke(result.getStroke()).build());
         }
     }
      
