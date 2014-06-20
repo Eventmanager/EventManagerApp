@@ -1,5 +1,6 @@
 package com.project.eventmanagerapp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.ConcurrentModificationException;
@@ -46,7 +47,6 @@ public class Activity_Planning extends FragmentActivity {
 		
 	    LinearLayout mainlinear= (LinearLayout) findViewById(R.id.planninglayout);
 	    
-	    
 		try{
 			planninginfo = PlanningManager.getInstance(context).getPlanning();
 		}
@@ -61,14 +61,14 @@ public class Activity_Planning extends FragmentActivity {
 			for(PlanningEvent e : l)
 			{
 				if(eventstart == null)
-					eventstart = e.getStartTime();
+					eventstart = (GregorianCalendar) e.getStartTime().clone();
 				else if(e.getStartTime().compareTo(eventstart) < 0)
-					eventstart = e.getStartTime();
+					eventstart = (GregorianCalendar) e.getStartTime().clone();
 				
 				if(eventend == null)
-					eventend = e.getEndTime();
+					eventend = (GregorianCalendar) e.getEndTime().clone();
 				else if(e.getEndTime().compareTo(eventend) > 0)
-					eventend = e.getEndTime();
+					eventend = (GregorianCalendar) e.getEndTime().clone();
 			}
 
 		for(int i=0;i<linear.length;i++)
@@ -122,7 +122,7 @@ public class Activity_Planning extends FragmentActivity {
 				}
 				else
 				{
-					GregorianCalendar previous = planninginfo.get(i).get(j-1).getEndTime();
+					GregorianCalendar previous = (GregorianCalendar) planninginfo.get(i).get(j-1).getEndTime().clone();
 					previous.add(Calendar.MINUTE,3);
 					if(planninginfo.get(i).get(j).getStartTime().compareTo(previous) > 0)
 					{

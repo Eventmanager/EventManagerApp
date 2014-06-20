@@ -32,6 +32,8 @@ public class PlanningManager {
 	
 	
 	public ArrayList<ArrayList<PlanningEvent>> getPlanning() throws ConcurrentModificationException{
+		if(planningList.size() != 0)
+			return planningList;
 		Thread c = new Thread(new Runnable(){
 			public void run(){
 				NewsItem notifyNews = null;
