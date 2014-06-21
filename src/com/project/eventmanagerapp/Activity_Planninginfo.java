@@ -43,8 +43,6 @@ public class Activity_Planninginfo extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_planninginfo);
 		Intent myIntent = getIntent();
-		current_podium = myIntent.getIntExtra("podium_id",0);
-		current_event = myIntent.getIntExtra("event_id",0);
 		selectedEvent = (PlanningEvent)myIntent.getSerializableExtra("planning_event");
 		
 		Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
@@ -55,7 +53,7 @@ public class Activity_Planninginfo extends Activity {
 		((TextView)findViewById(R.id.info_event_podium)).setText(Html.fromHtml("<b>Stage</b>: "+selectedEvent.getStage()));
 		((TextView)findViewById(R.id.info_event_description)).setText(selectedEvent.getDescription());
 		
-		sharedPrefs = getSharedPreferences("EventPrefs",MODE_PRIVATE);
+		sharedPrefs = this.getSharedPreferences("EventPrefs",MODE_PRIVATE);
 		if(sharedPrefs.contains("savedevents"))
 		{
 			try {
@@ -75,7 +73,7 @@ public class Activity_Planninginfo extends Activity {
 		saveButton.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				saveEvent(current_podium,current_event);
+				saveEvent(selectedEvent.getId());
 				savedEvents = listToJson(savedEventsList);
 				Editor editor = sharedPrefs.edit();
 				editor.putString("savedevents",savedEvents.toString());
@@ -88,7 +86,7 @@ public class Activity_Planninginfo extends Activity {
 		removeButton.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				removeEvent(current_podium,current_event);
+				removeEvent(selectedEvent.getId());
 				savedEvents = listToJson(savedEventsList);
 				Editor editor = sharedPrefs.edit();
 				editor.putString("savedevents",savedEvents.toString());
@@ -99,7 +97,7 @@ public class Activity_Planninginfo extends Activity {
 		});
 		
 		try{
-			if(isEventSaved(current_podium,current_event))
+			if(isEventSaved(selectedEvent.getId()))
 				removeButton.setVisibility(View.VISIBLE);
 			else
 				saveButton.setVisibility(View.VISIBLE);
@@ -111,20 +109,20 @@ public class Activity_Planninginfo extends Activity {
 		
 	}
 	
-	private void saveEvent(int podium, int event){
+	private void saveEvent(String id){
 		try{
-			if(!isEventSaved(podium,event))
-				savedEventsList.add(new JSONObject().put("podium", podium).put("event", event));
+			if(!isEventSaved(id))
+				savedEventsList.add(new JSONObject().put("id", id));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	}
 	
-	private void removeEvent(int podium,int event){
+	private void removeEvent(String id){
 		try {
 			for(int i=0;i<savedEventsList.size();i++)
-				if(savedEventsList.get(i).getInt("podium") == podium && savedEventsList.get(i).getInt("event") == event)
+				if(savedEventsList.get(i).getString("id").equals(id))
 			      savedEventsList.remove(i);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -132,9 +130,9 @@ public class Activity_Planninginfo extends Activity {
 		}
 	}
 	
-	private boolean isEventSaved(int podium,int event) throws JSONException{
+	private boolean isEventSaved(String id) throws JSONException{
 		for(JSONObject i : savedEventsList)
-			if(i.getInt("podium") == podium && i.getInt("event") == event)
+			if(i.getString("id").equals(id))
 				return true;
 		return false;
 	}

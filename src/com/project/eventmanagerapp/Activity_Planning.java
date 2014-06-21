@@ -97,7 +97,6 @@ public class Activity_Planning extends FragmentActivity {
 				
 				txt[j]=new TextView(Activity_Planning.this);
 				txt[j].setText(planninginfo.get(i).get(j).getTitle());
-				//Log.d("currduration", Float.toString(getDuration(planninginfo.get(i).get(j))));
 				txt[j].setLayoutParams(new LayoutParams(pxtodp(100f*getDuration(planninginfo.get(i).get(j))-12f),LayoutParams.MATCH_PARENT));
 				txt[j].setGravity(Gravity.CENTER);
 				txt[j].setLines(1);
@@ -105,7 +104,7 @@ public class Activity_Planning extends FragmentActivity {
 				txt[j].setEllipsize(TruncateAt.END);
 				txt[j].setTextSize(20);
 				txt[j].setBackgroundColor(Color.LTGRAY);
-				txt[j].setOnClickListener(new EventClickListener(i,j,planninginfo.get(i).get(j)));
+				txt[j].setOnClickListener(new EventClickListener(planninginfo.get(i).get(j)));
 				
 				textList.get(i).add(txt[j]);
 				
@@ -204,9 +203,11 @@ public class Activity_Planning extends FragmentActivity {
 		for(int i=0;i<savedEvents.length();i++)
 		{
 			try {
-				int podium = ((JSONObject) savedEvents.get(i)).getInt("podium");
-				int event = ((JSONObject) savedEvents.get(i)).getInt("event");
-				((TextView) textList.get(podium).get(event)).setBackgroundColor(0xff66ff66);
+				String id = ((JSONObject) savedEvents.get(i)).getString("id");
+				for(int p = 0;p<planninginfo.size();p++)
+					for(int e = 0;e<planninginfo.get(p).size();e++)
+						if(id.equals(planninginfo.get(p).get(e).getId()))
+							((TextView) textList.get(p).get(e)).setBackgroundColor(0xff66ff66);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -249,12 +250,8 @@ public class Activity_Planning extends FragmentActivity {
 	public class EventClickListener implements OnClickListener
 	   {
 
-	     int podium;
-	     int event;
 	     PlanningEvent e;
-	     public EventClickListener(int p,int e,PlanningEvent n) {
-	          this.podium = p;
-	          this.event = e;
+	     public EventClickListener(PlanningEvent n) {
 	          this.e = n;
 	     }
 
@@ -262,8 +259,6 @@ public class Activity_Planning extends FragmentActivity {
 	     public void onClick(View v)
 	     {
 	    	 Intent newpage = new Intent("com.project.eventmanagerapp.Activity_Planninginfo");		
-	    	 newpage.putExtra("podium_id", this.podium);
-	    	 newpage.putExtra("event_id", this.event);
 	    	 newpage.putExtra("planning_event",this.e);
 	    	 startActivity(newpage);
 	     }

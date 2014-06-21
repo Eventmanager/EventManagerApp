@@ -33,9 +33,9 @@ public class PlanningEvent implements Serializable{
 		return startTime;
 	}
 
-	/*public void setStartTime(GregorianCalendar startTime) {
+	public void setStartTime(GregorianCalendar startTime) {
 		this.startTime = startTime;
-	}*/
+	}
 
 	public GregorianCalendar getEndTime() {
 		return endTime;
