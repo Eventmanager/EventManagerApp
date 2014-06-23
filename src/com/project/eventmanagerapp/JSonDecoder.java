@@ -108,7 +108,7 @@ public class JSonDecoder {
 	
 	public static GregorianCalendar convertStringToGregorianCalendar(String inDate) throws NumberFormatException{
 		int year = Integer.parseInt(inDate.substring(0, 4));
-		int month = Integer.parseInt(inDate.substring(5, 7));
+		int month = Integer.parseInt(inDate.substring(5, 7))-1;
 		int day = Integer.parseInt(inDate.substring(8, 10));
 		int hour = Integer.parseInt(inDate.substring(11, 13));
 		int min = Integer.parseInt(inDate.substring(14, 16));
