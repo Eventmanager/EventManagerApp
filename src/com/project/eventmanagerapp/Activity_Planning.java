@@ -47,6 +47,8 @@ public class Activity_Planning extends FragmentActivity {
 		
 	    LinearLayout mainlinear= (LinearLayout) findViewById(R.id.planninglayout);
 	    
+	    PushNotification.removeNotification(context);
+	    
 		try{
 			planninginfo = PlanningManager.getInstance(context).getPlanning();
 		}

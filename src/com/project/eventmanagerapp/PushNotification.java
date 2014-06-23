@@ -25,7 +25,7 @@ public class PushNotification {
 		PendingIntent pending = PendingIntent.getActivity(context, 0, startActivity, 0);
 		notify.setLatestEventInfo(context, title, body, pending);
 		NM.notify(0, notify);
-		Log.i("PushNotification", "just send out a notification " + title + " --- " + body);
+		Log.i("PushNotification", "Just sent out a notification: " + title + " --- " + body);
 		
 		if(doVibrate){
 			Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
