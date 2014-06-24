@@ -3,8 +3,6 @@ package com.project.eventmanagerapp;
 import java.util.ArrayList;
 import org.json.*;
 import android.graphics.Color;
-import android.util.Log;
-
 import java.util.GregorianCalendar;
 
 public class JSonDecoder {

@@ -1,12 +1,6 @@
 package com.project.eventmanagerapp;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import org.json.*;
 
 import android.content.Context;

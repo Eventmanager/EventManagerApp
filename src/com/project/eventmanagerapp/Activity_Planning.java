@@ -1,6 +1,5 @@
 package com.project.eventmanagerapp;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.ConcurrentModificationException;
@@ -11,21 +10,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils.TruncateAt;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -196,9 +190,9 @@ public class Activity_Planning extends FragmentActivity {
 		else
 			savedEvents = new JSONArray();
 		
-		for(List l : textList){
-			for(Object v : l){
-				((TextView)v).setBackgroundColor(0x22cccccc);
+		for(ArrayList<TextView> l : textList){
+			for(TextView v : l){
+				v.setBackgroundColor(0x22cccccc);
 			}
 		}
 		

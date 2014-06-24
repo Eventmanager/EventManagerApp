@@ -1,7 +1,5 @@
 package com.project.eventmanagerapp;
 
-import android.graphics.Color;
-
 public class MapShape {
 	private int width;
 	private float[][] points;

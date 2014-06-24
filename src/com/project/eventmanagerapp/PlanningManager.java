@@ -2,12 +2,9 @@ package com.project.eventmanagerapp;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
-import java.util.List;
-
 import org.json.JSONException;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 public class PlanningManager {
